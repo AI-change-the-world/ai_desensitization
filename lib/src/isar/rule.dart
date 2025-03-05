@@ -10,9 +10,9 @@ enum EntityType {
   location('location'),
   others('others');
 
-  final String message;
+  final String name;
 
-  const EntityType(this.message);
+  const EntityType(this.name);
 }
 
 enum RuleType {
@@ -20,9 +20,9 @@ enum RuleType {
   keyword('keyword'),
   fuzzy('fuzzy');
 
-  final String message;
+  final String name;
 
-  const RuleType(this.message);
+  const RuleType(this.name);
 }
 
 enum DesensitizationFunc {
@@ -30,9 +30,9 @@ enum DesensitizationFunc {
   mask('mask'),
   remove('remove');
 
-  final String message;
+  final String name;
 
-  const DesensitizationFunc(this.message);
+  const DesensitizationFunc(this.name);
 }
 
 @collection
