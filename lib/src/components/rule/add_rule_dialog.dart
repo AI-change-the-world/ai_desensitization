@@ -336,6 +336,15 @@ class _AddState extends State<AddRuleDialog> {
                   ],
                 ),
               ),
+
+              // samples
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Samples",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),

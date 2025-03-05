@@ -5,6 +5,8 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - rust_lib_ai_desensitization (0.0.1):
+    - FlutterMacOS
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - window_manager (0.2.0):
@@ -14,6 +16,7 @@ DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - isar_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_flutter_libs/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - rust_lib_ai_desensitization (from `Flutter/ephemeral/.symlinks/plugins/rust_lib_ai_desensitization/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
@@ -24,6 +27,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/isar_flutter_libs/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  rust_lib_ai_desensitization:
+    :path: Flutter/ephemeral/.symlinks/plugins/rust_lib_ai_desensitization/macos
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
   window_manager:
@@ -33,6 +38,7 @@ SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   isar_flutter_libs: a65381780401f81ad6bf3f2e7cd0de5698fb98c4
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  rust_lib_ai_desensitization: f03f86d674e244d0254e614c4ee88694f729de38
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   window_manager: 1d01fa7ac65a6e6f83b965471b1a7fdd3f06166c
 
