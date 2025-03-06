@@ -1,3 +1,5 @@
+import 'package:ai_desensitization/src/components/rule/add_word_button.dart';
+import 'package:ai_desensitization/src/components/rule/word_with_tag.dart';
 import 'package:ai_desensitization/src/isar/rule.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +127,7 @@ class _AddState extends State<AddRuleDialog> {
 
   late String selectedRuleType = RuleType.values[0].name;
   late String selectedDesensitizationFunc = DesensitizationFunc.values[0].name;
+  late List<String> words = [];
 
   Widget _advancedInfo() {
     return Expanded(
@@ -343,6 +346,54 @@ class _AddState extends State<AddRuleDialog> {
                 child: Text(
                   "Samples",
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1),
+                          border: Border.all(color: Colors.black45),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...words.map(
+                              (e) => SizedBox(height: 40, child: Text(e)),
+                            ),
+                            AddWordButton(
+                              onSave: (s) {
+                                setState(() {
+                                  // widgets.add(WordWithTag(text: s));
+                                  words.add(s);
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1),
+                          border: Border.all(color: Colors.black45),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:
+                              words.map((e) => WordWithTag(text: e)).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

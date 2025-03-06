@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.8.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1918914929;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -2093844258;
 
 // Section: executor
 
@@ -45,6 +45,70 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__nlp__get_tag_name_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_tag_name",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_tag = <crate::nlp::jieba_tag::JiebaTag>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Result::<_, ()>::Ok(crate::api::nlp::get_tag_name(api_tag))?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__nlp__get_word_seg_result_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_word_seg_result",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_text = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::nlp::get_word_seg_result(api_text))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__simple__greet_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -109,6 +173,41 @@ fn wire__crate__api__simple__init_app_impl(
         },
     )
 }
+fn wire__crate__api__nlp__replace_entities_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "replace_entities",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_text = <String>::sse_decode(&mut deserializer);
+            let api_i18n = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::nlp::replace_entities(api_text, api_i18n))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 
 // Section: dart2rust
 
@@ -117,6 +216,103 @@ impl SseDecode for String {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for crate::nlp::jieba_tag::JiebaTag {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return crate::nlp::jieba_tag::JiebaTag::N;
+            }
+            1 => {
+                return crate::nlp::jieba_tag::JiebaTag::Nr;
+            }
+            2 => {
+                return crate::nlp::jieba_tag::JiebaTag::Ns;
+            }
+            3 => {
+                return crate::nlp::jieba_tag::JiebaTag::Nt;
+            }
+            4 => {
+                return crate::nlp::jieba_tag::JiebaTag::Nz;
+            }
+            5 => {
+                return crate::nlp::jieba_tag::JiebaTag::V;
+            }
+            6 => {
+                return crate::nlp::jieba_tag::JiebaTag::Vd;
+            }
+            7 => {
+                return crate::nlp::jieba_tag::JiebaTag::Vn;
+            }
+            8 => {
+                return crate::nlp::jieba_tag::JiebaTag::A;
+            }
+            9 => {
+                return crate::nlp::jieba_tag::JiebaTag::Ad;
+            }
+            10 => {
+                return crate::nlp::jieba_tag::JiebaTag::An;
+            }
+            11 => {
+                return crate::nlp::jieba_tag::JiebaTag::D;
+            }
+            12 => {
+                return crate::nlp::jieba_tag::JiebaTag::Dg;
+            }
+            13 => {
+                return crate::nlp::jieba_tag::JiebaTag::R;
+            }
+            14 => {
+                return crate::nlp::jieba_tag::JiebaTag::Rr;
+            }
+            15 => {
+                return crate::nlp::jieba_tag::JiebaTag::Rz;
+            }
+            16 => {
+                return crate::nlp::jieba_tag::JiebaTag::M;
+            }
+            17 => {
+                return crate::nlp::jieba_tag::JiebaTag::Mq;
+            }
+            18 => {
+                return crate::nlp::jieba_tag::JiebaTag::Q;
+            }
+            19 => {
+                return crate::nlp::jieba_tag::JiebaTag::P;
+            }
+            20 => {
+                return crate::nlp::jieba_tag::JiebaTag::C;
+            }
+            21 => {
+                return crate::nlp::jieba_tag::JiebaTag::U;
+            }
+            22 => {
+                return crate::nlp::jieba_tag::JiebaTag::Ug;
+            }
+            23 => {
+                return crate::nlp::jieba_tag::JiebaTag::Us;
+            }
+            24 => {
+                return crate::nlp::jieba_tag::JiebaTag::E;
+            }
+            25 => {
+                return crate::nlp::jieba_tag::JiebaTag::O;
+            }
+            26 => {
+                return crate::nlp::jieba_tag::JiebaTag::S;
+            }
+            27 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::nlp::jieba_tag::JiebaTag::X(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -132,6 +328,18 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::nlp::words::Word> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::nlp::words::Word>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -142,6 +350,26 @@ impl SseDecode for u8 {
 impl SseDecode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
+}
+
+impl SseDecode for crate::nlp::words::Word {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_word = <String>::sse_decode(deserializer);
+        let mut var_tag = <crate::nlp::jieba_tag::JiebaTag>::sse_decode(deserializer);
+        return crate::nlp::words::Word {
+            word: var_word,
+            tag: var_tag,
+        };
+    }
+}
+
+impl SseDecode for crate::nlp::words::Words {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <Vec<crate::nlp::words::Word>>::sse_decode(deserializer);
+        return crate::nlp::words::Words(var_field0);
+    }
 }
 
 impl SseDecode for i32 {
@@ -167,7 +395,9 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        2 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__nlp__get_word_seg_result_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__nlp__replace_entities_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -180,17 +410,194 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__nlp__get_tag_name_impl(ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
 
 // Section: rust2dart
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::nlp::jieba_tag::JiebaTag {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::nlp::jieba_tag::JiebaTag::N => [0.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Nr => [1.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Ns => [2.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Nt => [3.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Nz => [4.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::V => [5.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Vd => [6.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Vn => [7.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::A => [8.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Ad => [9.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::An => [10.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::D => [11.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Dg => [12.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::R => [13.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Rr => [14.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Rz => [15.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::M => [16.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Mq => [17.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Q => [18.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::P => [19.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::C => [20.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::U => [21.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Ug => [22.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::Us => [23.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::E => [24.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::O => [25.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::S => [26.into_dart()].into_dart(),
+            crate::nlp::jieba_tag::JiebaTag::X(field0) => {
+                [27.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::nlp::jieba_tag::JiebaTag
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::nlp::jieba_tag::JiebaTag>
+    for crate::nlp::jieba_tag::JiebaTag
+{
+    fn into_into_dart(self) -> crate::nlp::jieba_tag::JiebaTag {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::nlp::words::Word {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.word.into_into_dart().into_dart(),
+            self.tag.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::nlp::words::Word {}
+impl flutter_rust_bridge::IntoIntoDart<crate::nlp::words::Word> for crate::nlp::words::Word {
+    fn into_into_dart(self) -> crate::nlp::words::Word {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::nlp::words::Words {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::nlp::words::Words {}
+impl flutter_rust_bridge::IntoIntoDart<crate::nlp::words::Words> for crate::nlp::words::Words {
+    fn into_into_dart(self) -> crate::nlp::words::Words {
+        self
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.into_bytes(), serializer);
+    }
+}
+
+impl SseEncode for crate::nlp::jieba_tag::JiebaTag {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::nlp::jieba_tag::JiebaTag::N => {
+                <i32>::sse_encode(0, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Nr => {
+                <i32>::sse_encode(1, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Ns => {
+                <i32>::sse_encode(2, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Nt => {
+                <i32>::sse_encode(3, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Nz => {
+                <i32>::sse_encode(4, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::V => {
+                <i32>::sse_encode(5, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Vd => {
+                <i32>::sse_encode(6, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Vn => {
+                <i32>::sse_encode(7, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::A => {
+                <i32>::sse_encode(8, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Ad => {
+                <i32>::sse_encode(9, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::An => {
+                <i32>::sse_encode(10, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::D => {
+                <i32>::sse_encode(11, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Dg => {
+                <i32>::sse_encode(12, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::R => {
+                <i32>::sse_encode(13, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Rr => {
+                <i32>::sse_encode(14, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Rz => {
+                <i32>::sse_encode(15, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::M => {
+                <i32>::sse_encode(16, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Mq => {
+                <i32>::sse_encode(17, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Q => {
+                <i32>::sse_encode(18, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::P => {
+                <i32>::sse_encode(19, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::C => {
+                <i32>::sse_encode(20, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::U => {
+                <i32>::sse_encode(21, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Ug => {
+                <i32>::sse_encode(22, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::Us => {
+                <i32>::sse_encode(23, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::E => {
+                <i32>::sse_encode(24, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::O => {
+                <i32>::sse_encode(25, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::S => {
+                <i32>::sse_encode(26, serializer);
+            }
+            crate::nlp::jieba_tag::JiebaTag::X(field0) => {
+                <i32>::sse_encode(27, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -200,6 +607,16 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::nlp::words::Word> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::nlp::words::Word>::sse_encode(item, serializer);
         }
     }
 }
@@ -214,6 +631,21 @@ impl SseEncode for u8 {
 impl SseEncode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for crate::nlp::words::Word {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.word, serializer);
+        <crate::nlp::jieba_tag::JiebaTag>::sse_encode(self.tag, serializer);
+    }
+}
+
+impl SseEncode for crate::nlp::words::Words {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<crate::nlp::words::Word>>::sse_encode(self.0, serializer);
+    }
 }
 
 impl SseEncode for i32 {

@@ -8,6 +8,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 anyhow = "1.0.97"
+fake = "4.0.0"
 flutter_rust_bridge = "=2.8.0"
 jieba-rs = "0.7.2"
 
