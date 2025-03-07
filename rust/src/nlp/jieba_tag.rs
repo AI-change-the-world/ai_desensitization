@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum JiebaTag {
     N,         // 名词
     Nr,        // 人名

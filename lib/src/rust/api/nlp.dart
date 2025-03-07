@@ -14,5 +14,13 @@ Future<Words> getWordSegResult({required String text}) =>
 Future<String> replaceEntities({required String text, required String i18N}) =>
     RustLib.instance.api.crateApiNlpReplaceEntities(text: text, i18N: i18N);
 
+Future<Words> replaceEntitiesWithTags({
+  required String text,
+  required String i18N,
+}) => RustLib.instance.api.crateApiNlpReplaceEntitiesWithTags(
+  text: text,
+  i18N: i18N,
+);
+
 String getTagName({required JiebaTag tag}) =>
     RustLib.instance.api.crateApiNlpGetTagName(tag: tag);

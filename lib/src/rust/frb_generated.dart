@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.8.0';
 
   @override
-  int get rustContentHash => -2093844258;
+  int get rustContentHash => -1393820573;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -87,6 +87,11 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiSimpleInitApp();
 
   Future<String> crateApiNlpReplaceEntities({
+    required String text,
+    required String i18N,
+  });
+
+  Future<Words> crateApiNlpReplaceEntitiesWithTags({
     required String text,
     required String i18N,
   });
@@ -234,6 +239,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     debugName: "replace_entities",
     argNames: ["text", "i18N"],
   );
+
+  @override
+  Future<Words> crateApiNlpReplaceEntitiesWithTags({
+    required String text,
+    required String i18N,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(text, serializer);
+          sse_encode_String(i18N, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_words,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNlpReplaceEntitiesWithTagsConstMeta,
+        argValues: [text, i18N],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNlpReplaceEntitiesWithTagsConstMeta =>
+      const TaskConstMeta(
+        debugName: "replace_entities_with_tags",
+        argNames: ["text", "i18N"],
+      );
 
   @protected
   String dco_decode_String(dynamic raw) {

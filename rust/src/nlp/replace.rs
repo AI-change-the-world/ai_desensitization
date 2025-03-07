@@ -26,7 +26,34 @@ impl Words {
             _ => {}
         }
 
-        String::new()
+        self.join("")
+    }
+
+    pub fn replace_with_tag(&mut self, i18n: String) -> Words {
+        match i18n.as_str() {
+            "zh_cn" => {
+                use fake::{
+                    faker::{company::zh_cn::CompanyName, name::zh_cn::Name},
+                    Fake,
+                };
+                for word in self.0.iter_mut() {
+                    match word.tag {
+                        JiebaTag::Nr => {
+                            word.word = Name().fake();
+                        }
+                        JiebaTag::Ns => {
+                            word.word = convert_place_name(&word.word);
+                        }
+                        JiebaTag::Nt => {
+                            word.word = CompanyName().fake();
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            _ => {}
+        }
+        self.clone()
     }
 }
 

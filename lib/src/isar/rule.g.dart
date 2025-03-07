@@ -138,7 +138,7 @@ Rule _ruleDeserialize(
   object.ruleName = reader.readStringOrNull(offsets[5]);
   object.ruleType =
       _RuleruleTypeValueEnumMap[reader.readByteOrNull(offsets[6])] ??
-          RuleType.regex;
+          RuleType.asPossibleAsItCan;
   return object;
 }
 
@@ -166,7 +166,7 @@ P _ruleDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (_RuleruleTypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          RuleType.regex) as P;
+          RuleType.asPossibleAsItCan) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -195,14 +195,16 @@ const _RuleentityTypeValueEnumMap = {
   3: EntityType.others,
 };
 const _RuleruleTypeEnumValueMap = {
-  'regex': 0,
-  'keyword': 1,
-  'fuzzy': 2,
+  'asPossibleAsItCan': 0,
+  'regex': 1,
+  'keyword': 2,
+  'fuzzy': 3,
 };
 const _RuleruleTypeValueEnumMap = {
-  0: RuleType.regex,
-  1: RuleType.keyword,
-  2: RuleType.fuzzy,
+  0: RuleType.asPossibleAsItCan,
+  1: RuleType.regex,
+  2: RuleType.keyword,
+  3: RuleType.fuzzy,
 };
 
 Id _ruleGetId(Rule object) {

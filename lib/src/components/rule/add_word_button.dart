@@ -28,7 +28,7 @@ class _AddWordButtonState extends State<AddWordButton> {
       padding: const EdgeInsets.only(top: 4, bottom: 4, left: 6, right: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.orange,
+        color: Colors.blue.withValues(alpha: 0.2),
       ),
       child: FittedBox(
         child:
@@ -71,7 +71,7 @@ class _AddWordButtonState extends State<AddWordButton> {
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.orange),
+                              borderSide: BorderSide(color: Colors.blue),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(4),
                               ),

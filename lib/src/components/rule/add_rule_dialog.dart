@@ -1,4 +1,5 @@
 import 'package:ai_desensitization/src/components/rule/add_word_button.dart';
+import 'package:ai_desensitization/src/components/rule/word_replace.dart';
 import 'package:ai_desensitization/src/components/rule/word_with_tag.dart';
 import 'package:ai_desensitization/src/isar/rule.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -13,6 +14,41 @@ class AddRuleDialog extends StatefulWidget {
 }
 
 class _AddState extends State<AddRuleDialog> {
+  late ScrollController _leftController;
+  late ScrollController _rightController;
+  bool _isLeftScrolling = false;
+  bool _isRightScrolling = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _leftController = ScrollController();
+    _rightController = ScrollController();
+
+    _leftController.addListener(() {
+      if (!_isRightScrolling) {
+        _isLeftScrolling = true;
+        _rightController.jumpTo(_leftController.offset);
+        _isLeftScrolling = false;
+      }
+    });
+
+    _rightController.addListener(() {
+      if (!_isLeftScrolling) {
+        _isRightScrolling = true;
+        _leftController.jumpTo(_rightController.offset);
+        _isRightScrolling = false;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _leftController.dispose();
+    _rightController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -351,6 +387,7 @@ class _AddState extends State<AddRuleDialog> {
 
               Expanded(
                 child: Row(
+                  spacing: 5,
                   children: [
                     Expanded(
                       flex: 1,
@@ -360,21 +397,24 @@ class _AddState extends State<AddRuleDialog> {
                           borderRadius: BorderRadius.circular(1),
                           border: Border.all(color: Colors.black45),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...words.map(
-                              (e) => SizedBox(height: 40, child: Text(e)),
-                            ),
-                            AddWordButton(
-                              onSave: (s) {
-                                setState(() {
-                                  // widgets.add(WordWithTag(text: s));
-                                  words.add(s);
-                                });
-                              },
-                            ),
-                          ],
+                        child: SingleChildScrollView(
+                          physics: ClampingScrollPhysics(),
+                          controller: _leftController,
+                          child: Column(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...words.map((e) => WordWithTag(text: e)),
+                              AddWordButton(
+                                onSave: (s) {
+                                  setState(() {
+                                    // widgets.add(WordWithTag(text: s));
+                                    words.add(s);
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -386,10 +426,17 @@ class _AddState extends State<AddRuleDialog> {
                           borderRadius: BorderRadius.circular(1),
                           border: Border.all(color: Colors.black45),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                              words.map((e) => WordWithTag(text: e)).toList(),
+                        child: SingleChildScrollView(
+                          physics: ClampingScrollPhysics(),
+                          controller: _rightController,
+                          child: Column(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...words.map((e) => WordReplace(text: e)),
+                              SizedBox(height: 26),
+                            ],
+                          ),
                         ),
                       ),
                     ),

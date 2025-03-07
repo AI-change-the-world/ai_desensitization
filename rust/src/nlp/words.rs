@@ -2,13 +2,13 @@ use jieba_rs::Jieba;
 
 use super::jieba_tag::JiebaTag;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Word {
     pub word: String,
     pub tag: JiebaTag,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Words(pub Vec<Word>);
 
 impl Words {
