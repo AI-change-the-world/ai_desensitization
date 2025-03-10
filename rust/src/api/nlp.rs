@@ -1,6 +1,9 @@
 use flutter_rust_bridge::frb;
 
-use crate::nlp::{jieba_tag::JiebaTag, words::Words};
+use crate::nlp::{
+    jieba_tag::JiebaTag,
+    words::{add_word, Words},
+};
 
 pub fn get_word_seg_result(text: String) -> Words {
     Words::get_word_with_tag(&text)
@@ -19,4 +22,9 @@ pub fn replace_entities_with_tags(text: String, i18n: String) -> Words {
 #[frb(sync)]
 pub fn get_tag_name(tag: JiebaTag) -> String {
     tag.as_str().to_string()
+}
+
+#[frb(sync)]
+pub fn add_segment_word(word: String, freq: usize, tag: String) {
+    add_word(&word, freq, &tag);
 }

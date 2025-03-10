@@ -1,4 +1,7 @@
+use std::sync::RwLock;
+
 use jieba_rs::Jieba;
+use once_cell::sync::Lazy;
 
 use super::jieba_tag::JiebaTag;
 
@@ -10,6 +13,17 @@ pub struct Word {
 
 #[derive(Debug, Clone)]
 pub struct Words(pub Vec<Word>);
+
+static JIEBA: Lazy<RwLock<Jieba>> = Lazy::new(|| {
+    let mut jieba = Jieba::new();
+    jieba.add_word("张三", Some(1000), Some("nr"));
+    RwLock::new(jieba)
+});
+
+pub fn add_word(word: &str, freq: usize, tag: &str) {
+    let mut j = JIEBA.write().unwrap();
+    (*j).add_word(word, Some(freq), Some(tag));
+}
 
 impl Words {
     fn from_list(words: Vec<(String, JiebaTag)>) -> Self {
@@ -24,8 +38,8 @@ impl Words {
     }
 
     pub fn get_word_with_tag(word: &str) -> Self {
-        let jieba = Jieba::new();
-        let words = jieba.tag(word, true);
+        let j = JIEBA.read().unwrap();
+        let words = j.tag(word, true);
         let mut result: Vec<(String, JiebaTag)> = Vec::new();
         for word in words {
             match word.tag {
@@ -73,5 +87,14 @@ impl Words {
             result.push_str(sep);
         }
         result
+    }
+
+    pub fn print_human_names(&self) {
+        for word in &self.0 {
+            match word.tag {
+                JiebaTag::Nr => println!("{}", word.word),
+                _ => {}
+            }
+        }
     }
 }

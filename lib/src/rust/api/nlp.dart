@@ -24,3 +24,13 @@ Future<Words> replaceEntitiesWithTags({
 
 String getTagName({required JiebaTag tag}) =>
     RustLib.instance.api.crateApiNlpGetTagName(tag: tag);
+
+void addSegmentWord({
+  required String word,
+  required BigInt freq,
+  required String tag,
+}) => RustLib.instance.api.crateApiNlpAddSegmentWord(
+  word: word,
+  freq: freq,
+  tag: tag,
+);

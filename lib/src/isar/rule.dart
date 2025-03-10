@@ -16,7 +16,7 @@ enum EntityType {
 }
 
 enum RuleType {
-  asPossibleAsItCan('asPossibleAsItCan'),
+  asPossibleAsItCan('asPossible'),
   regex('regex'),
   keyword('keyword'),
   fuzzy('fuzzy');

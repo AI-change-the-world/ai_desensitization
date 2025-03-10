@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+use crate::nlp::utils::convert_place_name;
+
 use super::{jieba_tag::JiebaTag, words::Words};
 
 impl Words {
@@ -8,16 +12,34 @@ impl Words {
                     faker::{company::zh_cn::CompanyName, name::zh_cn::Name},
                     Fake,
                 };
+                let mut names: HashMap<String, String> = HashMap::new();
+                let mut companies: HashMap<String, String> = HashMap::new();
+                let mut places: HashMap<String, String> = HashMap::new();
                 for word in self.0.iter_mut() {
                     match word.tag {
                         JiebaTag::Nr => {
+                            if names.contains_key(&word.word) {
+                                word.word = names.get(&word.word).unwrap().clone();
+                                continue;
+                            }
                             word.word = Name().fake();
+                            names.insert(word.word.clone(), word.word.clone());
                         }
                         JiebaTag::Ns => {
+                            if places.contains_key(&word.word) {
+                                word.word = places.get(&word.word).unwrap().clone();
+                                continue;
+                            }
                             word.word = convert_place_name(&word.word);
+                            places.insert(word.word.clone(), word.word.clone());
                         }
                         JiebaTag::Nt => {
+                            if companies.contains_key(&word.word) {
+                                word.word = companies.get(&word.word).unwrap().clone();
+                                continue;
+                            }
                             word.word = CompanyName().fake();
+                            companies.insert(word.word.clone(), word.word.clone());
                         }
                         _ => {}
                     }
@@ -55,36 +77,6 @@ impl Words {
         }
         self.clone()
     }
-}
-
-fn convert_place_name(name: &str) -> String {
-    // 按后缀长度降序排列，确保长后缀优先匹配
-    let suffixes = [
-        "特别行政区",
-        "自治区",
-        "自治州",
-        "自治县",
-        "自治旗",
-        "林区",
-        "矿区",
-        "地区",
-        "盟",
-        "省",
-        "市",
-        "区",
-        "县",
-        "旗",
-    ];
-
-    // 遍历所有后缀进行匹配
-    for suffix in &suffixes {
-        if name.ends_with(suffix) {
-            return format!("某某{}", suffix);
-        }
-    }
-
-    // 未匹配后缀时返回原名称（根据需求可改为默认处理）
-    name.to_string()
 }
 
 #[cfg(test)]
