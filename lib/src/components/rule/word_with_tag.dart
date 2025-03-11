@@ -4,8 +4,15 @@ import 'package:ai_desensitization/src/rust/nlp/words.dart';
 import 'package:flutter/material.dart';
 
 class WordWithTag extends StatefulWidget {
-  const WordWithTag({super.key, required this.text});
+  const WordWithTag({
+    super.key,
+    required this.text,
+    required this.index,
+    required this.onDelete,
+  });
   final String text;
+  final int index;
+  final Function(int index) onDelete;
 
   @override
   State<WordWithTag> createState() => _WordWithTagState();
@@ -27,7 +34,13 @@ class _WordWithTagState extends State<WordWithTag> {
       builder: (c, s) {
         if (s.connectionState == ConnectionState.done) {
           final words = s.data as Words;
-          return WordWithTagWidget(words: words);
+          return WordWithTagWidget(
+            words: words,
+            showIcon: true,
+            onDelete: () {
+              widget.onDelete(widget.index);
+            },
+          );
         } else {
           return Text('loading');
         }

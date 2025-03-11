@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:ai_desensitization/src/components/rule/add_word_button.dart';
-import 'package:ai_desensitization/src/components/rule/word_replace.dart';
+import 'package:ai_desensitization/src/components/rule/word_desensitization.dart';
 import 'package:ai_desensitization/src/components/rule/word_with_tag.dart';
 import 'package:ai_desensitization/src/isar/rule.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 
 class AddRuleDialog extends StatefulWidget {
   const AddRuleDialog({super.key, required this.entityType});
@@ -46,6 +50,8 @@ class _AddState extends State<AddRuleDialog> {
   void dispose() {
     _leftController.dispose();
     _rightController.dispose();
+    controller.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -111,9 +117,9 @@ class _AddState extends State<AddRuleDialog> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(4),
         ),
-        height: 200,
+        height: 150,
         child: Column(
-          spacing: 20,
+          spacing: 10,
           children: [
             SizedBox(
               height: 30,
@@ -137,7 +143,7 @@ class _AddState extends State<AddRuleDialog> {
             ),
             Expanded(
               child: TextField(
-                maxLines: 6,
+                maxLines: 5,
                 style: TextStyle(fontSize: 12),
                 autofocus: true,
                 // controller: ,
@@ -165,6 +171,21 @@ class _AddState extends State<AddRuleDialog> {
   late DesensitizationFunc selectedDesensitizationFunc =
       DesensitizationFunc.values[0];
   late List<String> words = [];
+  late final TextEditingController controller = TextEditingController();
+
+  Timer? _debounce;
+  final Duration _debounceDuration = Duration(milliseconds: 500);
+
+  void _onTextChanged(String text) {
+    // 取消之前的定时器
+    _debounce?.cancel();
+
+    // 启动新的定时器
+    _debounce = Timer(_debounceDuration, () {
+      // 0.5s 内没有新的输入，执行操作
+      setState(() {});
+    });
+  }
 
   Widget _advancedInfo() {
     return Expanded(
@@ -191,7 +212,8 @@ class _AddState extends State<AddRuleDialog> {
                       child: TextField(
                         style: TextStyle(fontSize: 12),
                         autofocus: true,
-                        // controller: ,
+                        controller: controller,
+                        onChanged: _onTextChanged,
                         enabled: selectedRuleType != RuleType.wordcut,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -395,6 +417,8 @@ class _AddState extends State<AddRuleDialog> {
 
               Expanded(
                 child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 5,
                   children: [
                     Expanded(
@@ -412,9 +436,22 @@ class _AddState extends State<AddRuleDialog> {
                             spacing: 5,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...words.map((e) => WordWithTag(text: e)),
+                              ...words.mapIndexed(
+                                (i, e) => WordWithTag(
+                                  text: e,
+                                  index: i,
+                                  onDelete: (index) {
+                                    setState(() {
+                                      words.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
                               AddWordButton(
                                 onSave: (s) {
+                                  if (s.trim().isEmpty) {
+                                    return;
+                                  }
                                   setState(() {
                                     // widgets.add(WordWithTag(text: s));
                                     words.add(s);
@@ -441,11 +478,16 @@ class _AddState extends State<AddRuleDialog> {
                             spacing: 5,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...words.map(
-                                (e) => WordReplace(
+                              ...words.mapIndexed(
+                                (i, e) => WordDesensitization(
                                   text: e,
-                                  params: [],
-                                  type: selectedRuleType.index,
+                                  params:
+                                      controller.text.trim().isNotEmpty
+                                          ? [controller.text]
+                                          : [],
+                                  type: selectedRuleType.order,
+                                  desensitizationType:
+                                      selectedDesensitizationFunc.order,
                                 ),
                               ),
                               SizedBox(height: 26),
@@ -456,6 +498,10 @@ class _AddState extends State<AddRuleDialog> {
                     ),
                   ],
                 ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(onPressed: () {}, child: Text("Save")),
               ),
             ],
           ),

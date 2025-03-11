@@ -27,14 +27,14 @@ enum RuleType {
 }
 
 extension GetIndex on RuleType {
-  int get index {
+  int get order {
     switch (this) {
       case RuleType.wordcut:
         return 0;
       case RuleType.regex:
-        return 1;
-      case RuleType.keyword:
         return 2;
+      case RuleType.keyword:
+        return 1;
       case RuleType.fuzzy:
         return 3;
     }
@@ -49,6 +49,19 @@ enum DesensitizationFunc {
   final String name;
 
   const DesensitizationFunc(this.name);
+}
+
+extension GetIndex2 on DesensitizationFunc {
+  int get order {
+    switch (this) {
+      case DesensitizationFunc.replace:
+        return 0;
+      case DesensitizationFunc.mask:
+        return 1;
+      case DesensitizationFunc.remove:
+        return 2;
+    }
+  }
 }
 
 @collection
