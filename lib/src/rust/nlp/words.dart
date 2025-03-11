@@ -4,12 +4,22 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import 'jieba_tag.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+import 'tags.dart';
+part 'words.freezed.dart';
+
+@freezed
+sealed class Tag with _$Tag {
+  const Tag._();
+
+  const factory Tag.wordcut(WordcutTag field0) = Tag_Wordcut;
+  const factory Tag.others(OtherTags field0) = Tag_Others;
+}
 
 class Word {
   final String word;
-  final JiebaTag tag;
+  final Tag tag;
 
   const Word({required this.word, required this.tag});
 

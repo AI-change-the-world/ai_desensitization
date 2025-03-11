@@ -4,36 +4,53 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../nlp/jieba_tag.dart';
+import '../nlp/tags.dart';
 import '../nlp/words.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
 Future<Words> getWordSegResult({required String text}) =>
     RustLib.instance.api.crateApiNlpGetWordSegResult(text: text);
 
-Future<String> replaceEntities({required String text, required String i18N}) =>
-    RustLib.instance.api.crateApiNlpReplaceEntities(text: text, i18N: i18N);
+Future<String> replaceEntities({
+  required String text,
+  required OperationConfig cfg,
+}) => RustLib.instance.api.crateApiNlpReplaceEntities(text: text, cfg: cfg);
 
 Future<Words> replaceEntitiesWithTags({
   required String text,
-  required String i18N,
+  required OperationConfig cfg,
 }) => RustLib.instance.api.crateApiNlpReplaceEntitiesWithTags(
   text: text,
-  i18N: i18N,
+  cfg: cfg,
 );
 
-Future<String> maskEntities({required String text, required String i18N}) =>
-    RustLib.instance.api.crateApiNlpMaskEntities(text: text, i18N: i18N);
+Future<String> maskEntities({
+  required String text,
+  required OperationConfig cfg,
+}) => RustLib.instance.api.crateApiNlpMaskEntities(text: text, cfg: cfg);
 
 Future<Words> maskEntitiesWithTags({
   required String text,
-  required String i18N,
-}) => RustLib.instance.api.crateApiNlpMaskEntitiesWithTags(
+  required OperationConfig cfg,
+}) =>
+    RustLib.instance.api.crateApiNlpMaskEntitiesWithTags(text: text, cfg: cfg);
+
+Future<String> removeEntities({
+  required String text,
+  required OperationConfig cfg,
+}) => RustLib.instance.api.crateApiNlpRemoveEntities(text: text, cfg: cfg);
+
+Future<Words> removeEntitiesWithTags({
+  required String text,
+  required OperationConfig cfg,
+}) => RustLib.instance.api.crateApiNlpRemoveEntitiesWithTags(
   text: text,
-  i18N: i18N,
+  cfg: cfg,
 );
 
-String getTagName({required JiebaTag tag}) =>
+String getTagName({required Tag tag}) =>
     RustLib.instance.api.crateApiNlpGetTagName(tag: tag);
 
 void addSegmentWord({
@@ -45,3 +62,27 @@ void addSegmentWord({
   freq: freq,
   tag: tag,
 );
+
+class OperationConfig {
+  final String i18N;
+  final BigInt type;
+  final List<String> params;
+
+  const OperationConfig({
+    required this.i18N,
+    required this.type,
+    required this.params,
+  });
+
+  @override
+  int get hashCode => i18N.hashCode ^ type.hashCode ^ params.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OperationConfig &&
+          runtimeType == other.runtimeType &&
+          i18N == other.i18N &&
+          type == other.type &&
+          params == other.params;
+}

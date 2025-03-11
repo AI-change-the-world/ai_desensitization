@@ -161,8 +161,9 @@ class _AddState extends State<AddRuleDialog> {
     );
   }
 
-  late String selectedRuleType = RuleType.values[0].name;
-  late String selectedDesensitizationFunc = DesensitizationFunc.values[0].name;
+  late RuleType selectedRuleType = RuleType.values[0];
+  late DesensitizationFunc selectedDesensitizationFunc =
+      DesensitizationFunc.values[0];
   late List<String> words = [];
 
   Widget _advancedInfo() {
@@ -191,12 +192,18 @@ class _AddState extends State<AddRuleDialog> {
                         style: TextStyle(fontSize: 12),
                         autofocus: true,
                         // controller: ,
+                        enabled: selectedRuleType != RuleType.wordcut,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 10,
                           ),
-                          hintText: "Rule pattern",
+                          hintText:
+                              selectedRuleType == RuleType.wordcut
+                                  ? ""
+                                  : selectedRuleType == RuleType.fuzzy
+                                  ? "Input prompt"
+                                  : "Rule pattern",
                           hintStyle: TextStyle(fontSize: 12),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey.shade400),
@@ -208,7 +215,7 @@ class _AddState extends State<AddRuleDialog> {
                     SizedBox(
                       width: 125,
                       height: 30,
-                      child: DropdownButtonFormField2<String>(
+                      child: DropdownButtonFormField2<RuleType>(
                         isExpanded: true,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(0),
@@ -226,7 +233,7 @@ class _AddState extends State<AddRuleDialog> {
                               children: [
                                 SizedBox(width: 5),
                                 Text(
-                                  selectedRuleType,
+                                  selectedRuleType.name,
                                   style: TextStyle(fontSize: 12),
                                 ),
                                 Spacer(),
@@ -242,8 +249,8 @@ class _AddState extends State<AddRuleDialog> {
                         items:
                             RuleType.values
                                 .map(
-                                  (item) => DropdownMenuItem<String>(
-                                    value: item.name,
+                                  (item) => DropdownMenuItem<RuleType>(
+                                    value: item,
                                     child: Text(
                                       item.name,
                                       style: const TextStyle(fontSize: 12),
@@ -256,7 +263,7 @@ class _AddState extends State<AddRuleDialog> {
                             return;
                           }
                           setState(() {
-                            selectedRuleType = value.toString();
+                            selectedRuleType = value;
                           });
                         },
                         buttonStyleData: const ButtonStyleData(
@@ -299,7 +306,7 @@ class _AddState extends State<AddRuleDialog> {
                     SizedBox(
                       width: 125,
                       height: 30,
-                      child: DropdownButtonFormField2<String>(
+                      child: DropdownButtonFormField2<DesensitizationFunc>(
                         isExpanded: true,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(0),
@@ -317,7 +324,7 @@ class _AddState extends State<AddRuleDialog> {
                               children: [
                                 SizedBox(width: 5),
                                 Text(
-                                  selectedDesensitizationFunc,
+                                  selectedDesensitizationFunc.name,
                                   style: TextStyle(fontSize: 12),
                                 ),
                                 Spacer(),
@@ -333,13 +340,14 @@ class _AddState extends State<AddRuleDialog> {
                         items:
                             DesensitizationFunc.values
                                 .map(
-                                  (item) => DropdownMenuItem<String>(
-                                    value: item.name,
-                                    child: Text(
-                                      item.name,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ),
+                                  (item) =>
+                                      DropdownMenuItem<DesensitizationFunc>(
+                                        value: item,
+                                        child: Text(
+                                          item.name,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ),
                                 )
                                 .toList(),
                         onChanged: (value) {
@@ -348,7 +356,7 @@ class _AddState extends State<AddRuleDialog> {
                             return;
                           }
                           setState(() {
-                            selectedDesensitizationFunc = value.toString();
+                            selectedDesensitizationFunc = value;
                           });
                         },
                         buttonStyleData: const ButtonStyleData(
@@ -433,7 +441,13 @@ class _AddState extends State<AddRuleDialog> {
                             spacing: 5,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...words.map((e) => WordReplace(text: e)),
+                              ...words.map(
+                                (e) => WordReplace(
+                                  text: e,
+                                  params: [],
+                                  type: selectedRuleType.index,
+                                ),
+                              ),
                               SizedBox(height: 26),
                             ],
                           ),

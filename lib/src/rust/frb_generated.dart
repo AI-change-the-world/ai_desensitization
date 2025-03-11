@@ -10,7 +10,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
-import 'nlp/jieba_tag.dart';
+import 'nlp/tags.dart';
 import 'nlp/words.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.8.0';
 
   @override
-  int get rustContentHash => 2129493699;
+  int get rustContentHash => -1103566208;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -84,7 +84,7 @@ abstract class RustLibApi extends BaseApi {
     required String tag,
   });
 
-  String crateApiNlpGetTagName({required JiebaTag tag});
+  String crateApiNlpGetTagName({required Tag tag});
 
   Future<Words> crateApiNlpGetWordSegResult({required String text});
 
@@ -94,22 +94,32 @@ abstract class RustLibApi extends BaseApi {
 
   Future<String> crateApiNlpMaskEntities({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   });
 
   Future<Words> crateApiNlpMaskEntitiesWithTags({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
+  });
+
+  Future<String> crateApiNlpRemoveEntities({
+    required String text,
+    required OperationConfig cfg,
+  });
+
+  Future<Words> crateApiNlpRemoveEntitiesWithTags({
+    required String text,
+    required OperationConfig cfg,
   });
 
   Future<String> crateApiNlpReplaceEntities({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   });
 
   Future<Words> crateApiNlpReplaceEntitiesWithTags({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   });
 }
 
@@ -153,12 +163,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
-  String crateApiNlpGetTagName({required JiebaTag tag}) {
+  String crateApiNlpGetTagName({required Tag tag}) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_box_autoadd_jieba_tag(tag, serializer);
+          sse_encode_box_autoadd_tag(tag, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
         },
         codec: SseCodec(
@@ -256,14 +266,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<String> crateApiNlpMaskEntities({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(text, serializer);
-          sse_encode_String(i18N, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -276,7 +286,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: null,
         ),
         constMeta: kCrateApiNlpMaskEntitiesConstMeta,
-        argValues: [text, i18N],
+        argValues: [text, cfg],
         apiImpl: this,
       ),
     );
@@ -284,20 +294,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiNlpMaskEntitiesConstMeta => const TaskConstMeta(
     debugName: "mask_entities",
-    argNames: ["text", "i18N"],
+    argNames: ["text", "cfg"],
   );
 
   @override
   Future<Words> crateApiNlpMaskEntitiesWithTags({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(text, serializer);
-          sse_encode_String(i18N, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -310,7 +320,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: null,
         ),
         constMeta: kCrateApiNlpMaskEntitiesWithTagsConstMeta,
-        argValues: [text, i18N],
+        argValues: [text, cfg],
         apiImpl: this,
       ),
     );
@@ -319,20 +329,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiNlpMaskEntitiesWithTagsConstMeta =>
       const TaskConstMeta(
         debugName: "mask_entities_with_tags",
-        argNames: ["text", "i18N"],
+        argNames: ["text", "cfg"],
       );
 
   @override
-  Future<String> crateApiNlpReplaceEntities({
+  Future<String> crateApiNlpRemoveEntities({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(text, serializer);
-          sse_encode_String(i18N, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -344,29 +354,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_String,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiNlpReplaceEntitiesConstMeta,
-        argValues: [text, i18N],
+        constMeta: kCrateApiNlpRemoveEntitiesConstMeta,
+        argValues: [text, cfg],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiNlpReplaceEntitiesConstMeta => const TaskConstMeta(
-    debugName: "replace_entities",
-    argNames: ["text", "i18N"],
+  TaskConstMeta get kCrateApiNlpRemoveEntitiesConstMeta => const TaskConstMeta(
+    debugName: "remove_entities",
+    argNames: ["text", "cfg"],
   );
 
   @override
-  Future<Words> crateApiNlpReplaceEntitiesWithTags({
+  Future<Words> crateApiNlpRemoveEntitiesWithTags({
     required String text,
-    required String i18N,
+    required OperationConfig cfg,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(text, serializer);
-          sse_encode_String(i18N, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -378,8 +388,77 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_words,
           decodeErrorData: null,
         ),
+        constMeta: kCrateApiNlpRemoveEntitiesWithTagsConstMeta,
+        argValues: [text, cfg],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNlpRemoveEntitiesWithTagsConstMeta =>
+      const TaskConstMeta(
+        debugName: "remove_entities_with_tags",
+        argNames: ["text", "cfg"],
+      );
+
+  @override
+  Future<String> crateApiNlpReplaceEntities({
+    required String text,
+    required OperationConfig cfg,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(text, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 10,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNlpReplaceEntitiesConstMeta,
+        argValues: [text, cfg],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNlpReplaceEntitiesConstMeta => const TaskConstMeta(
+    debugName: "replace_entities",
+    argNames: ["text", "cfg"],
+  );
+
+  @override
+  Future<Words> crateApiNlpReplaceEntitiesWithTags({
+    required String text,
+    required OperationConfig cfg,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(text, serializer);
+          sse_encode_box_autoadd_operation_config(cfg, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 11,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_words,
+          decodeErrorData: null,
+        ),
         constMeta: kCrateApiNlpReplaceEntitiesWithTagsConstMeta,
-        argValues: [text, i18N],
+        argValues: [text, cfg],
         apiImpl: this,
       ),
     );
@@ -388,7 +467,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiNlpReplaceEntitiesWithTagsConstMeta =>
       const TaskConstMeta(
         debugName: "replace_entities_with_tags",
-        argNames: ["text", "i18N"],
+        argNames: ["text", "cfg"],
       );
 
   @protected
@@ -398,74 +477,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  JiebaTag dco_decode_box_autoadd_jieba_tag(dynamic raw) {
+  OperationConfig dco_decode_box_autoadd_operation_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_jieba_tag(raw);
+    return dco_decode_operation_config(raw);
   }
 
   @protected
-  JiebaTag dco_decode_jieba_tag(dynamic raw) {
+  Tag dco_decode_box_autoadd_tag(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return JiebaTag_N();
-      case 1:
-        return JiebaTag_Nr();
-      case 2:
-        return JiebaTag_Ns();
-      case 3:
-        return JiebaTag_Nt();
-      case 4:
-        return JiebaTag_Nz();
-      case 5:
-        return JiebaTag_V();
-      case 6:
-        return JiebaTag_Vd();
-      case 7:
-        return JiebaTag_Vn();
-      case 8:
-        return JiebaTag_A();
-      case 9:
-        return JiebaTag_Ad();
-      case 10:
-        return JiebaTag_An();
-      case 11:
-        return JiebaTag_D();
-      case 12:
-        return JiebaTag_Dg();
-      case 13:
-        return JiebaTag_R();
-      case 14:
-        return JiebaTag_Rr();
-      case 15:
-        return JiebaTag_Rz();
-      case 16:
-        return JiebaTag_M();
-      case 17:
-        return JiebaTag_Mq();
-      case 18:
-        return JiebaTag_Q();
-      case 19:
-        return JiebaTag_P();
-      case 20:
-        return JiebaTag_C();
-      case 21:
-        return JiebaTag_U();
-      case 22:
-        return JiebaTag_Ug();
-      case 23:
-        return JiebaTag_Us();
-      case 24:
-        return JiebaTag_E();
-      case 25:
-        return JiebaTag_O();
-      case 26:
-        return JiebaTag_S();
-      case 27:
-        return JiebaTag_X(dco_decode_String(raw[1]));
-      default:
-        throw Exception("unreachable");
-    }
+    return dco_decode_tag(raw);
+  }
+
+  @protected
+  WordcutTag dco_decode_box_autoadd_wordcut_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_wordcut_tag(raw);
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
   }
 
   @protected
@@ -478,6 +516,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<Word> dco_decode_list_word(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_word).toList();
+  }
+
+  @protected
+  OperationConfig dco_decode_operation_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return OperationConfig(
+      i18N: dco_decode_String(arr[0]),
+      type: dco_decode_usize(arr[1]),
+      params: dco_decode_list_String(arr[2]),
+    );
+  }
+
+  @protected
+  OtherTags dco_decode_other_tags(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return OtherTags.values[raw as int];
+  }
+
+  @protected
+  Tag dco_decode_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return Tag_Wordcut(dco_decode_box_autoadd_wordcut_tag(raw[1]));
+      case 1:
+        return Tag_Others(dco_decode_other_tags(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -504,10 +574,72 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     final arr = raw as List<dynamic>;
     if (arr.length != 2)
       throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return Word(
-      word: dco_decode_String(arr[0]),
-      tag: dco_decode_jieba_tag(arr[1]),
-    );
+    return Word(word: dco_decode_String(arr[0]), tag: dco_decode_tag(arr[1]));
+  }
+
+  @protected
+  WordcutTag dco_decode_wordcut_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return WordcutTag_N();
+      case 1:
+        return WordcutTag_Nr();
+      case 2:
+        return WordcutTag_Ns();
+      case 3:
+        return WordcutTag_Nt();
+      case 4:
+        return WordcutTag_Nz();
+      case 5:
+        return WordcutTag_V();
+      case 6:
+        return WordcutTag_Vd();
+      case 7:
+        return WordcutTag_Vn();
+      case 8:
+        return WordcutTag_A();
+      case 9:
+        return WordcutTag_Ad();
+      case 10:
+        return WordcutTag_An();
+      case 11:
+        return WordcutTag_D();
+      case 12:
+        return WordcutTag_Dg();
+      case 13:
+        return WordcutTag_R();
+      case 14:
+        return WordcutTag_Rr();
+      case 15:
+        return WordcutTag_Rz();
+      case 16:
+        return WordcutTag_M();
+      case 17:
+        return WordcutTag_Mq();
+      case 18:
+        return WordcutTag_Q();
+      case 19:
+        return WordcutTag_P();
+      case 20:
+        return WordcutTag_C();
+      case 21:
+        return WordcutTag_U();
+      case 22:
+        return WordcutTag_Ug();
+      case 23:
+        return WordcutTag_Us();
+      case 24:
+        return WordcutTag_E();
+      case 25:
+        return WordcutTag_O();
+      case 26:
+        return WordcutTag_S();
+      case 27:
+        return WordcutTag_X(dco_decode_String(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -527,77 +659,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  JiebaTag sse_decode_box_autoadd_jieba_tag(SseDeserializer deserializer) {
+  OperationConfig sse_decode_box_autoadd_operation_config(
+    SseDeserializer deserializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_jieba_tag(deserializer));
+    return (sse_decode_operation_config(deserializer));
   }
 
   @protected
-  JiebaTag sse_decode_jieba_tag(SseDeserializer deserializer) {
+  Tag sse_decode_box_autoadd_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_tag(deserializer));
+  }
+
+  @protected
+  WordcutTag sse_decode_box_autoadd_wordcut_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_wordcut_tag(deserializer));
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        return JiebaTag_N();
-      case 1:
-        return JiebaTag_Nr();
-      case 2:
-        return JiebaTag_Ns();
-      case 3:
-        return JiebaTag_Nt();
-      case 4:
-        return JiebaTag_Nz();
-      case 5:
-        return JiebaTag_V();
-      case 6:
-        return JiebaTag_Vd();
-      case 7:
-        return JiebaTag_Vn();
-      case 8:
-        return JiebaTag_A();
-      case 9:
-        return JiebaTag_Ad();
-      case 10:
-        return JiebaTag_An();
-      case 11:
-        return JiebaTag_D();
-      case 12:
-        return JiebaTag_Dg();
-      case 13:
-        return JiebaTag_R();
-      case 14:
-        return JiebaTag_Rr();
-      case 15:
-        return JiebaTag_Rz();
-      case 16:
-        return JiebaTag_M();
-      case 17:
-        return JiebaTag_Mq();
-      case 18:
-        return JiebaTag_Q();
-      case 19:
-        return JiebaTag_P();
-      case 20:
-        return JiebaTag_C();
-      case 21:
-        return JiebaTag_U();
-      case 22:
-        return JiebaTag_Ug();
-      case 23:
-        return JiebaTag_Us();
-      case 24:
-        return JiebaTag_E();
-      case 25:
-        return JiebaTag_O();
-      case 26:
-        return JiebaTag_S();
-      case 27:
-        var var_field0 = sse_decode_String(deserializer);
-        return JiebaTag_X(var_field0);
-      default:
-        throw UnimplementedError('');
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
     }
+    return ans_;
   }
 
   @protected
@@ -617,6 +713,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_word(deserializer));
     }
     return ans_;
+  }
+
+  @protected
+  OperationConfig sse_decode_operation_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_i18N = sse_decode_String(deserializer);
+    var var_type = sse_decode_usize(deserializer);
+    var var_params = sse_decode_list_String(deserializer);
+    return OperationConfig(i18N: var_i18N, type: var_type, params: var_params);
+  }
+
+  @protected
+  OtherTags sse_decode_other_tags(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return OtherTags.values[inner];
+  }
+
+  @protected
+  Tag sse_decode_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_box_autoadd_wordcut_tag(deserializer);
+        return Tag_Wordcut(var_field0);
+      case 1:
+        var var_field0 = sse_decode_other_tags(deserializer);
+        return Tag_Others(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -640,8 +769,76 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Word sse_decode_word(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_word = sse_decode_String(deserializer);
-    var var_tag = sse_decode_jieba_tag(deserializer);
+    var var_tag = sse_decode_tag(deserializer);
     return Word(word: var_word, tag: var_tag);
+  }
+
+  @protected
+  WordcutTag sse_decode_wordcut_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return WordcutTag_N();
+      case 1:
+        return WordcutTag_Nr();
+      case 2:
+        return WordcutTag_Ns();
+      case 3:
+        return WordcutTag_Nt();
+      case 4:
+        return WordcutTag_Nz();
+      case 5:
+        return WordcutTag_V();
+      case 6:
+        return WordcutTag_Vd();
+      case 7:
+        return WordcutTag_Vn();
+      case 8:
+        return WordcutTag_A();
+      case 9:
+        return WordcutTag_Ad();
+      case 10:
+        return WordcutTag_An();
+      case 11:
+        return WordcutTag_D();
+      case 12:
+        return WordcutTag_Dg();
+      case 13:
+        return WordcutTag_R();
+      case 14:
+        return WordcutTag_Rr();
+      case 15:
+        return WordcutTag_Rz();
+      case 16:
+        return WordcutTag_M();
+      case 17:
+        return WordcutTag_Mq();
+      case 18:
+        return WordcutTag_Q();
+      case 19:
+        return WordcutTag_P();
+      case 20:
+        return WordcutTag_C();
+      case 21:
+        return WordcutTag_U();
+      case 22:
+        return WordcutTag_Ug();
+      case 23:
+        return WordcutTag_Us();
+      case 24:
+        return WordcutTag_E();
+      case 25:
+        return WordcutTag_O();
+      case 26:
+        return WordcutTag_S();
+      case 27:
+        var var_field0 = sse_decode_String(deserializer);
+        return WordcutTag_X(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -649,12 +846,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_list_word(deserializer);
     return Words(field0: var_field0);
-  }
-
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
   }
 
   @protected
@@ -670,75 +861,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_jieba_tag(
-    JiebaTag self,
+  void sse_encode_box_autoadd_operation_config(
+    OperationConfig self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_jieba_tag(self, serializer);
+    sse_encode_operation_config(self, serializer);
   }
 
   @protected
-  void sse_encode_jieba_tag(JiebaTag self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_tag(Tag self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case JiebaTag_N():
-        sse_encode_i_32(0, serializer);
-      case JiebaTag_Nr():
-        sse_encode_i_32(1, serializer);
-      case JiebaTag_Ns():
-        sse_encode_i_32(2, serializer);
-      case JiebaTag_Nt():
-        sse_encode_i_32(3, serializer);
-      case JiebaTag_Nz():
-        sse_encode_i_32(4, serializer);
-      case JiebaTag_V():
-        sse_encode_i_32(5, serializer);
-      case JiebaTag_Vd():
-        sse_encode_i_32(6, serializer);
-      case JiebaTag_Vn():
-        sse_encode_i_32(7, serializer);
-      case JiebaTag_A():
-        sse_encode_i_32(8, serializer);
-      case JiebaTag_Ad():
-        sse_encode_i_32(9, serializer);
-      case JiebaTag_An():
-        sse_encode_i_32(10, serializer);
-      case JiebaTag_D():
-        sse_encode_i_32(11, serializer);
-      case JiebaTag_Dg():
-        sse_encode_i_32(12, serializer);
-      case JiebaTag_R():
-        sse_encode_i_32(13, serializer);
-      case JiebaTag_Rr():
-        sse_encode_i_32(14, serializer);
-      case JiebaTag_Rz():
-        sse_encode_i_32(15, serializer);
-      case JiebaTag_M():
-        sse_encode_i_32(16, serializer);
-      case JiebaTag_Mq():
-        sse_encode_i_32(17, serializer);
-      case JiebaTag_Q():
-        sse_encode_i_32(18, serializer);
-      case JiebaTag_P():
-        sse_encode_i_32(19, serializer);
-      case JiebaTag_C():
-        sse_encode_i_32(20, serializer);
-      case JiebaTag_U():
-        sse_encode_i_32(21, serializer);
-      case JiebaTag_Ug():
-        sse_encode_i_32(22, serializer);
-      case JiebaTag_Us():
-        sse_encode_i_32(23, serializer);
-      case JiebaTag_E():
-        sse_encode_i_32(24, serializer);
-      case JiebaTag_O():
-        sse_encode_i_32(25, serializer);
-      case JiebaTag_S():
-        sse_encode_i_32(26, serializer);
-      case JiebaTag_X(field0: final field0):
-        sse_encode_i_32(27, serializer);
-        sse_encode_String(field0, serializer);
+    sse_encode_tag(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_wordcut_tag(
+    WordcutTag self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_wordcut_tag(self, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
     }
   }
 
@@ -758,6 +915,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_word(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_operation_config(
+    OperationConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.i18N, serializer);
+    sse_encode_usize(self.type, serializer);
+    sse_encode_list_String(self.params, serializer);
+  }
+
+  @protected
+  void sse_encode_other_tags(OtherTags self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_tag(Tag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case Tag_Wordcut(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_wordcut_tag(field0, serializer);
+      case Tag_Others(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_other_tags(field0, serializer);
     }
   }
 
@@ -782,19 +969,77 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_word(Word self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.word, serializer);
-    sse_encode_jieba_tag(self.tag, serializer);
+    sse_encode_tag(self.tag, serializer);
+  }
+
+  @protected
+  void sse_encode_wordcut_tag(WordcutTag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case WordcutTag_N():
+        sse_encode_i_32(0, serializer);
+      case WordcutTag_Nr():
+        sse_encode_i_32(1, serializer);
+      case WordcutTag_Ns():
+        sse_encode_i_32(2, serializer);
+      case WordcutTag_Nt():
+        sse_encode_i_32(3, serializer);
+      case WordcutTag_Nz():
+        sse_encode_i_32(4, serializer);
+      case WordcutTag_V():
+        sse_encode_i_32(5, serializer);
+      case WordcutTag_Vd():
+        sse_encode_i_32(6, serializer);
+      case WordcutTag_Vn():
+        sse_encode_i_32(7, serializer);
+      case WordcutTag_A():
+        sse_encode_i_32(8, serializer);
+      case WordcutTag_Ad():
+        sse_encode_i_32(9, serializer);
+      case WordcutTag_An():
+        sse_encode_i_32(10, serializer);
+      case WordcutTag_D():
+        sse_encode_i_32(11, serializer);
+      case WordcutTag_Dg():
+        sse_encode_i_32(12, serializer);
+      case WordcutTag_R():
+        sse_encode_i_32(13, serializer);
+      case WordcutTag_Rr():
+        sse_encode_i_32(14, serializer);
+      case WordcutTag_Rz():
+        sse_encode_i_32(15, serializer);
+      case WordcutTag_M():
+        sse_encode_i_32(16, serializer);
+      case WordcutTag_Mq():
+        sse_encode_i_32(17, serializer);
+      case WordcutTag_Q():
+        sse_encode_i_32(18, serializer);
+      case WordcutTag_P():
+        sse_encode_i_32(19, serializer);
+      case WordcutTag_C():
+        sse_encode_i_32(20, serializer);
+      case WordcutTag_U():
+        sse_encode_i_32(21, serializer);
+      case WordcutTag_Ug():
+        sse_encode_i_32(22, serializer);
+      case WordcutTag_Us():
+        sse_encode_i_32(23, serializer);
+      case WordcutTag_E():
+        sse_encode_i_32(24, serializer);
+      case WordcutTag_O():
+        sse_encode_i_32(25, serializer);
+      case WordcutTag_S():
+        sse_encode_i_32(26, serializer);
+      case WordcutTag_X(field0: final field0):
+        sse_encode_i_32(27, serializer);
+        sse_encode_String(field0, serializer);
+    }
   }
 
   @protected
   void sse_encode_words(Words self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_word(self.field0, serializer);
-  }
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
   }
 
   @protected

@@ -2,10 +2,10 @@ use std::collections::HashMap;
 
 use crate::nlp::utils::convert_place_name;
 
-use super::{jieba_tag::JiebaTag, words::Words};
+use super::{tags::WordcutTag, words::Words};
 
 impl Words {
-    pub fn wordcut_replace(&mut self, i18n: String) -> String {
+    pub fn replace(&mut self, i18n: String) -> String {
         match i18n.as_str() {
             "zh_cn" => {
                 use fake::{
@@ -16,40 +16,45 @@ impl Words {
                 let mut companies: HashMap<String, String> = HashMap::new();
                 let mut places: HashMap<String, String> = HashMap::new();
                 for word in self.0.iter_mut() {
-                    match word.tag {
-                        JiebaTag::Nr => {
-                            if names.contains_key(&word.word) {
-                                word.word = names.get(&word.word).unwrap().clone();
-                                continue;
+                    match &word.tag {
+                        crate::nlp::words::Tag::Wordcut(wordcut_tag) => match wordcut_tag {
+                            WordcutTag::Nr => {
+                                if names.contains_key(&word.word) {
+                                    word.word = names.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = Name().fake();
+                                names.insert(formal, word.word.clone());
                             }
-                            let formal = word.word.clone();
-                            word.word = Name().fake();
-                            names.insert(formal, word.word.clone());
-                        }
-                        JiebaTag::Ns => {
-                            if places.contains_key(&word.word) {
-                                word.word = places.get(&word.word).unwrap().clone();
-                                continue;
+                            WordcutTag::Ns => {
+                                if places.contains_key(&word.word) {
+                                    word.word = places.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = convert_place_name(&word.word);
+                                places.insert(formal, word.word.clone());
                             }
-                            let formal = word.word.clone();
-                            word.word = convert_place_name(&word.word);
-                            places.insert(formal, word.word.clone());
-                        }
-                        JiebaTag::Nt => {
-                            if companies.contains_key(&word.word) {
-                                word.word = companies.get(&word.word).unwrap().clone();
-                                continue;
+                            WordcutTag::Nt => {
+                                if companies.contains_key(&word.word) {
+                                    word.word = companies.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = CompanyName().fake();
+                                companies.insert(formal, word.word.clone());
                             }
-                            let formal = word.word.clone();
-                            word.word = CompanyName().fake();
-                            companies.insert(formal, word.word.clone());
-                        }
-                        _ => {}
+                            _ => {}
+                        },
+                        super::words::Tag::Others(other_tags) => match other_tags {
+                            super::tags::OtherTags::Other => {}
+                            _ => {
+                                word.word = "*".repeat(word.word.len()).to_owned();
+                            }
+                        },
                     }
                 }
-
-                println!("names: {:?}", names);
-                println!("companies: {:?}", companies);
             }
             _ => {}
         }
@@ -57,25 +62,54 @@ impl Words {
         self.join("")
     }
 
-    pub fn wordcut_replace_with_tag(&mut self, i18n: String) -> Words {
+    pub fn replace_with_tag(&mut self, i18n: String) -> Words {
         match i18n.as_str() {
             "zh_cn" => {
                 use fake::{
                     faker::{company::zh_cn::CompanyName, name::zh_cn::Name},
                     Fake,
                 };
+                let mut names: HashMap<String, String> = HashMap::new();
+                let mut companies: HashMap<String, String> = HashMap::new();
+                let mut places: HashMap<String, String> = HashMap::new();
                 for word in self.0.iter_mut() {
-                    match word.tag {
-                        JiebaTag::Nr => {
-                            word.word = Name().fake();
-                        }
-                        JiebaTag::Ns => {
-                            word.word = convert_place_name(&word.word);
-                        }
-                        JiebaTag::Nt => {
-                            word.word = CompanyName().fake();
-                        }
-                        _ => {}
+                    match &word.tag {
+                        crate::nlp::words::Tag::Wordcut(wordcut_tag) => match wordcut_tag {
+                            WordcutTag::Nr => {
+                                if names.contains_key(&word.word) {
+                                    word.word = names.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = Name().fake();
+                                names.insert(formal, word.word.clone());
+                            }
+                            WordcutTag::Ns => {
+                                if places.contains_key(&word.word) {
+                                    word.word = places.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = convert_place_name(&word.word);
+                                places.insert(formal, word.word.clone());
+                            }
+                            WordcutTag::Nt => {
+                                if companies.contains_key(&word.word) {
+                                    word.word = companies.get(&word.word).unwrap().clone();
+                                    continue;
+                                }
+                                let formal = word.word.clone();
+                                word.word = CompanyName().fake();
+                                companies.insert(formal, word.word.clone());
+                            }
+                            _ => {}
+                        },
+                        super::words::Tag::Others(other_tags) => match other_tags {
+                            super::tags::OtherTags::Other => {}
+                            _ => {
+                                word.word = "*".repeat(word.word.len()).to_owned();
+                            }
+                        },
                     }
                 }
             }

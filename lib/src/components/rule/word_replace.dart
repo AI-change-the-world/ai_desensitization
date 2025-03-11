@@ -4,8 +4,15 @@ import 'package:ai_desensitization/src/rust/nlp/words.dart';
 import 'package:flutter/material.dart';
 
 class WordReplace extends StatefulWidget {
-  const WordReplace({super.key, required this.text});
+  const WordReplace({
+    super.key,
+    required this.text,
+    required this.type,
+    required this.params,
+  });
   final String text;
+  final int type;
+  final List<String> params;
 
   @override
   State<WordReplace> createState() => _WordReplaceState();
@@ -17,7 +24,14 @@ class _WordReplaceState extends State<WordReplace> {
   @override
   void initState() {
     super.initState();
-    future = replaceEntitiesWithTags(text: widget.text, i18N: "zh_cn");
+    future = replaceEntitiesWithTags(
+      text: widget.text,
+      cfg: OperationConfig(
+        i18N: "zh_cn",
+        type: BigInt.from(widget.type),
+        params: widget.params,
+      ),
+    );
   }
 
   @override

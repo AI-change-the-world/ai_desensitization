@@ -16,7 +16,7 @@ enum EntityType {
 }
 
 enum RuleType {
-  asPossibleAsItCan('wordcut'),
+  wordcut('wordcut'),
   regex('regex'),
   keyword('keyword'),
   fuzzy('fuzzy');
@@ -24,6 +24,21 @@ enum RuleType {
   final String name;
 
   const RuleType(this.name);
+}
+
+extension GetIndex on RuleType {
+  int get index {
+    switch (this) {
+      case RuleType.wordcut:
+        return 0;
+      case RuleType.regex:
+        return 1;
+      case RuleType.keyword:
+        return 2;
+      case RuleType.fuzzy:
+        return 3;
+    }
+  }
 }
 
 enum DesensitizationFunc {

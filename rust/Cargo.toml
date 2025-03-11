@@ -7,11 +7,13 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
+aho-corasick = "1.1.3"
 anyhow = "1.0.97"
 fake = "4.0.0"
 flutter_rust_bridge = "=2.8.0"
 jieba-rs = "0.7.2"
 once_cell = "1.20.3"
+regex = "1.11.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

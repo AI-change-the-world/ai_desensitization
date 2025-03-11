@@ -9,7 +9,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
-import 'nlp/jieba_tag.dart';
+import 'nlp/tags.dart';
 import 'nlp/words.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 
@@ -25,16 +25,34 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
-  JiebaTag dco_decode_box_autoadd_jieba_tag(dynamic raw);
+  OperationConfig dco_decode_box_autoadd_operation_config(dynamic raw);
 
   @protected
-  JiebaTag dco_decode_jieba_tag(dynamic raw);
+  Tag dco_decode_box_autoadd_tag(dynamic raw);
+
+  @protected
+  WordcutTag dco_decode_box_autoadd_wordcut_tag(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
   List<Word> dco_decode_list_word(dynamic raw);
+
+  @protected
+  OperationConfig dco_decode_operation_config(dynamic raw);
+
+  @protected
+  OtherTags dco_decode_other_tags(dynamic raw);
+
+  @protected
+  Tag dco_decode_tag(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -49,22 +67,45 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Word dco_decode_word(dynamic raw);
 
   @protected
+  WordcutTag dco_decode_wordcut_tag(dynamic raw);
+
+  @protected
   Words dco_decode_words(dynamic raw);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  JiebaTag sse_decode_box_autoadd_jieba_tag(SseDeserializer deserializer);
+  OperationConfig sse_decode_box_autoadd_operation_config(
+    SseDeserializer deserializer,
+  );
 
   @protected
-  JiebaTag sse_decode_jieba_tag(SseDeserializer deserializer);
+  Tag sse_decode_box_autoadd_tag(SseDeserializer deserializer);
+
+  @protected
+  WordcutTag sse_decode_box_autoadd_wordcut_tag(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
   List<Word> sse_decode_list_word(SseDeserializer deserializer);
+
+  @protected
+  OperationConfig sse_decode_operation_config(SseDeserializer deserializer);
+
+  @protected
+  OtherTags sse_decode_other_tags(SseDeserializer deserializer);
+
+  @protected
+  Tag sse_decode_tag(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -79,10 +120,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Word sse_decode_word(SseDeserializer deserializer);
 
   @protected
-  Words sse_decode_words(SseDeserializer deserializer);
+  WordcutTag sse_decode_wordcut_tag(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  Words sse_decode_words(SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
@@ -91,13 +132,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_jieba_tag(
-    JiebaTag self,
+  void sse_encode_box_autoadd_operation_config(
+    OperationConfig self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_jieba_tag(JiebaTag self, SseSerializer serializer);
+  void sse_encode_box_autoadd_tag(Tag self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_wordcut_tag(
+    WordcutTag self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -107,6 +160,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_word(List<Word> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_operation_config(
+    OperationConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_other_tags(OtherTags self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tag(Tag self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -121,10 +186,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_word(Word self, SseSerializer serializer);
 
   @protected
-  void sse_encode_words(Words self, SseSerializer serializer);
+  void sse_encode_wordcut_tag(WordcutTag self, SseSerializer serializer);
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
+  void sse_encode_words(Words self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);

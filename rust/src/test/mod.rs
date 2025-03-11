@@ -160,12 +160,12 @@ mod tests {
         words.print_human_names();
         words.print_company_names();
 
-        let r = words.wordcut_replace("zh_cn".to_owned());
+        let r = words.replace("zh_cn".to_owned());
         println!("{}", r);
 
         println!("=============================================================================");
 
-        let r = words.wordcut_mask("zh_cn".to_owned());
+        let r = words.mask("zh_cn".to_owned());
         println!("{}", r);
     }
 }
