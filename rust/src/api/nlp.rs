@@ -6,17 +6,27 @@ use crate::nlp::{
 };
 
 pub fn get_word_seg_result(text: String) -> Words {
-    Words::get_word_with_tag(&text)
+    Words::from_str_with_wordcut(&text)
 }
 
 pub fn replace_entities(text: String, i18n: String) -> String {
-    let mut words = Words::get_word_with_tag(&text);
-    words.replace(i18n)
+    let mut words = Words::from_str_with_wordcut(&text);
+    words.wordcut_replace(i18n)
 }
 
 pub fn replace_entities_with_tags(text: String, i18n: String) -> Words {
-    let mut words = Words::get_word_with_tag(&text);
-    words.replace_with_tag(i18n)
+    let mut words = Words::from_str_with_wordcut(&text);
+    words.wordcut_replace_with_tag(i18n)
+}
+
+pub fn mask_entities(text: String, i18n: String) -> String {
+    let mut words = Words::from_str_with_wordcut(&text);
+    words.wordcut_mask(i18n)
+}
+
+pub fn mask_entities_with_tags(text: String, i18n: String) -> Words {
+    let mut words = Words::from_str_with_wordcut(&text);
+    words.wordcut_mask_with_tags(i18n)
 }
 
 #[frb(sync)]

@@ -143,7 +143,7 @@ mod tests {
     #[test]
     fn test_string_mask() {
         let s = "
-        在一个风和日丽的上午，张三和李四相约在咖啡馆讨论最近的项目进展。张三丰恰好路过，看到两人激烈地比划着手势，忍不住凑上去听了一耳朵。
+        在一个风和日丽的上午，江苏大门科技有限公司的张三和李四相约在咖啡馆讨论最近的项目进展。张三丰恰好路过，看到两人激烈地比划着手势，忍不住凑上去听了一耳朵。
 
 “张伟那边的数据分析做好了吗？”李四皱着眉问道。
 
@@ -156,9 +156,16 @@ mod tests {
 几人相视一笑，看来这个项目稳了。
         ";
         // let masked = mask_names(&names);
-        let mut words = Words::get_word_with_tag(&s);
+        let mut words = Words::from_str_with_wordcut(&s);
         words.print_human_names();
-        let r = words.mask("zh_cn".to_owned());
+        words.print_company_names();
+
+        let r = words.wordcut_replace("zh_cn".to_owned());
+        println!("{}", r);
+
+        println!("=============================================================================");
+
+        let r = words.wordcut_mask("zh_cn".to_owned());
         println!("{}", r);
     }
 }

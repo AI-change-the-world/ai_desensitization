@@ -22,6 +22,17 @@ Future<Words> replaceEntitiesWithTags({
   i18N: i18N,
 );
 
+Future<String> maskEntities({required String text, required String i18N}) =>
+    RustLib.instance.api.crateApiNlpMaskEntities(text: text, i18N: i18N);
+
+Future<Words> maskEntitiesWithTags({
+  required String text,
+  required String i18N,
+}) => RustLib.instance.api.crateApiNlpMaskEntitiesWithTags(
+  text: text,
+  i18N: i18N,
+);
+
 String getTagName({required JiebaTag tag}) =>
     RustLib.instance.api.crateApiNlpGetTagName(tag: tag);
 

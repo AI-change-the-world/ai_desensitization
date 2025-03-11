@@ -17,6 +17,8 @@ pub struct Words(pub Vec<Word>);
 static JIEBA: Lazy<RwLock<Jieba>> = Lazy::new(|| {
     let mut jieba = Jieba::new();
     jieba.add_word("张三", Some(1000), Some("nr"));
+    jieba.add_word("江苏大门科技有限公司", Some(1000), Some("nt"));
+    jieba.add_word("李四相", Some(0), Some("nr"));
     RwLock::new(jieba)
 });
 
@@ -26,7 +28,7 @@ pub fn add_word(word: &str, freq: usize, tag: &str) {
 }
 
 impl Words {
-    fn from_list(words: Vec<(String, JiebaTag)>) -> Self {
+    fn from_wordcut_list(words: Vec<(String, JiebaTag)>) -> Self {
         let mut result: Vec<Word> = Vec::new();
         for word in words {
             result.push(Word {
@@ -37,7 +39,7 @@ impl Words {
         Words(result)
     }
 
-    pub fn get_word_with_tag(word: &str) -> Self {
+    pub fn from_str_with_wordcut(word: &str) -> Self {
         let j = JIEBA.read().unwrap();
         let words = j.tag(word, true);
         let mut result: Vec<(String, JiebaTag)> = Vec::new();
@@ -77,7 +79,7 @@ impl Words {
             }
         }
 
-        Words::from_list(result)
+        Words::from_wordcut_list(result)
     }
 
     pub fn join(&self, sep: &str) -> String {
@@ -93,6 +95,15 @@ impl Words {
         for word in &self.0 {
             match word.tag {
                 JiebaTag::Nr => println!("{}", word.word),
+                _ => {}
+            }
+        }
+    }
+
+    pub fn print_company_names(&self) {
+        for word in &self.0 {
+            match word.tag {
+                JiebaTag::Nt => println!("{}", word.word),
                 _ => {}
             }
         }

@@ -5,7 +5,7 @@ use crate::nlp::utils::convert_place_name;
 use super::{jieba_tag::JiebaTag, words::Words};
 
 impl Words {
-    pub fn replace(&mut self, i18n: String) -> String {
+    pub fn wordcut_replace(&mut self, i18n: String) -> String {
         match i18n.as_str() {
             "zh_cn" => {
                 use fake::{
@@ -22,28 +22,34 @@ impl Words {
                                 word.word = names.get(&word.word).unwrap().clone();
                                 continue;
                             }
+                            let formal = word.word.clone();
                             word.word = Name().fake();
-                            names.insert(word.word.clone(), word.word.clone());
+                            names.insert(formal, word.word.clone());
                         }
                         JiebaTag::Ns => {
                             if places.contains_key(&word.word) {
                                 word.word = places.get(&word.word).unwrap().clone();
                                 continue;
                             }
+                            let formal = word.word.clone();
                             word.word = convert_place_name(&word.word);
-                            places.insert(word.word.clone(), word.word.clone());
+                            places.insert(formal, word.word.clone());
                         }
                         JiebaTag::Nt => {
                             if companies.contains_key(&word.word) {
                                 word.word = companies.get(&word.word).unwrap().clone();
                                 continue;
                             }
+                            let formal = word.word.clone();
                             word.word = CompanyName().fake();
-                            companies.insert(word.word.clone(), word.word.clone());
+                            companies.insert(formal, word.word.clone());
                         }
                         _ => {}
                     }
                 }
+
+                println!("names: {:?}", names);
+                println!("companies: {:?}", companies);
             }
             _ => {}
         }
@@ -51,7 +57,7 @@ impl Words {
         self.join("")
     }
 
-    pub fn replace_with_tag(&mut self, i18n: String) -> Words {
+    pub fn wordcut_replace_with_tag(&mut self, i18n: String) -> Words {
         match i18n.as_str() {
             "zh_cn" => {
                 use fake::{

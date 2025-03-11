@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.8.0';
 
   @override
-  int get rustContentHash => -1988371087;
+  int get rustContentHash => 2129493699;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -91,6 +91,16 @@ abstract class RustLibApi extends BaseApi {
   String crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
+
+  Future<String> crateApiNlpMaskEntities({
+    required String text,
+    required String i18N,
+  });
+
+  Future<Words> crateApiNlpMaskEntitiesWithTags({
+    required String text,
+    required String i18N,
+  });
 
   Future<String> crateApiNlpReplaceEntities({
     required String text,
@@ -244,7 +254,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @override
-  Future<String> crateApiNlpReplaceEntities({
+  Future<String> crateApiNlpMaskEntities({
     required String text,
     required String i18N,
   }) {
@@ -258,6 +268,75 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             generalizedFrbRustBinding,
             serializer,
             funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNlpMaskEntitiesConstMeta,
+        argValues: [text, i18N],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNlpMaskEntitiesConstMeta => const TaskConstMeta(
+    debugName: "mask_entities",
+    argNames: ["text", "i18N"],
+  );
+
+  @override
+  Future<Words> crateApiNlpMaskEntitiesWithTags({
+    required String text,
+    required String i18N,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(text, serializer);
+          sse_encode_String(i18N, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_words,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNlpMaskEntitiesWithTagsConstMeta,
+        argValues: [text, i18N],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNlpMaskEntitiesWithTagsConstMeta =>
+      const TaskConstMeta(
+        debugName: "mask_entities_with_tags",
+        argNames: ["text", "i18N"],
+      );
+
+  @override
+  Future<String> crateApiNlpReplaceEntities({
+    required String text,
+    required String i18N,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(text, serializer);
+          sse_encode_String(i18N, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 8,
             port: port_,
           );
         },
@@ -291,7 +370,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 9,
             port: port_,
           );
         },

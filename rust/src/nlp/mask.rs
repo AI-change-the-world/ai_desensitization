@@ -101,7 +101,7 @@ fn mask_name(
 }
 
 impl Words {
-    pub fn mask(&mut self, i18n: String) -> String {
+    pub fn wordcut_mask(&mut self, i18n: String) -> String {
         match i18n.as_str() {
             "zh_cn" => {
                 let mut names: HashMap<String, (String, String)> = HashMap::new();
@@ -142,5 +142,47 @@ impl Words {
         }
 
         self.join("")
+    }
+
+    pub fn wordcut_mask_with_tags(&mut self, i18n: String) -> Words {
+        match i18n.as_str() {
+            "zh_cn" => {
+                let mut names: HashMap<String, (String, String)> = HashMap::new();
+                let mut companies: HashMap<String, String> = HashMap::new();
+                let mut places: HashMap<String, String> = HashMap::new();
+
+                for word in self.0.iter_mut() {
+                    if word.tag == JiebaTag::Nr {
+                        if names.contains_key(&word.word) {
+                            word.word = names.get(&word.word).unwrap().clone().1;
+                            continue;
+                        }
+                        let r = mask_name(word.word.clone(), &names);
+                        if let Some((surname, masked_name)) = r {
+                            word.word = masked_name.clone();
+                            names.insert(word.word.clone(), (surname.to_owned(), masked_name));
+                        }
+                    }
+                    if word.tag == JiebaTag::Nt {
+                        if companies.contains_key(&word.word) {
+                            word.word = companies.get(&word.word).unwrap().clone();
+                            continue;
+                        }
+                        word.word = "某公司".to_owned();
+                        companies.insert(word.word.clone(), word.word.clone());
+                    }
+                    if word.tag == JiebaTag::Ns {
+                        if places.contains_key(&word.word) {
+                            word.word = places.get(&word.word).unwrap().clone();
+                            continue;
+                        }
+                        word.word = convert_place_name(&word.word);
+                        places.insert(word.word.clone(), word.word.clone());
+                    }
+                }
+            }
+            _ => {}
+        }
+        self.clone()
     }
 }
